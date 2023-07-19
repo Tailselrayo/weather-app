@@ -1,0 +1,1 @@
+export type WeatherCode = "clear"|"mostly clear"|"dizzle"|'rain'|'fog'|'snow'|'thunderstorm'|'freezing rain' 
