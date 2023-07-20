@@ -1,20 +1,26 @@
-import { Box, Group, Stack, Text } from "@mantine/core";
+import { Box, Group, Stack, Text, Title } from "@mantine/core";
 import cities from '@/json/cities.json'
 import { Weather } from "@/types/Weather";
 import { TemperatureDisplay } from "@/components/TemperatureDisplay";
 import { WeatherImageDisplay } from "@/components/WeatherImageDisplay";
+import { findPlaceFromCoords } from "@/utils/findPlaceFromCoords";
+import { DaySlider } from "@/components/DaySlider";
+import { useState } from "react";
+import { getWeatherFromWMOCode } from "@/utils/getWeatherFromWMOCode";
+import { WindDisplay } from "@/components/WindDisplay";
 
 interface WeatherProps {
   weather: Weather;
 }
 
 export async function getServerSideProps() {
-  const marseilleCoord = cities.results.find((elem)=>elem.name==="Marseille")!;
+  const marseilleCoord = cities.results.find((elem)=>elem.name==="Marseilles")!;
   const urlParams = new URLSearchParams({
     latitude: marseilleCoord.latitude.toString(),
     longitude: marseilleCoord.longitude.toString(),
-    daily: "temperature_2m_max,temperature_2m_min",
+    daily: "temperature_2m_max,temperature_2m_min,windspeed_10m_max,weathercode",
     timezone: "auto",
+    forcast_days: "7",
   })
   const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?${urlParams}`)
   const data = await weatherResponse.json();
@@ -22,18 +28,36 @@ export async function getServerSideProps() {
 }
 
 export default function Home(props: WeatherProps) {
+  const [slideNb, setSlideNb] = useState(0);
 
-  console.log(props.weather)
+  const data = props.weather;
+  const coords = [data.latitude, data.longitude];
+  const tempUnit = data.daily_units.temperature_2m_max;
+  const windUnit = data.daily_units.windspeed_10m_max;
+  const time = data.daily.time;
+  const weatherData = data.daily;
+  
+  //On extrait toutes les données que l'on a typé
+
+  console.log(time[0])
   return (
     <Stack h="100%" w="100%" align="center">
-      <Group w="100%" h="70%" bg="cyan" position="apart" grow>
+      <Title>Meteo from {findPlaceFromCoords(coords)} : {(new Date(time[slideNb])).toLocaleDateString()}</Title>
+      <Group
+        w="100%"
+        h="60%"
+        bg="cyan"
+        position="apart"
+        grow
+      >
         <TemperatureDisplay 
-          temperature={props.weather.daily.temperature_2m_max[0]}
-          unit={props.weather.daily_units.temperature_2m_max}
+          temperature={weatherData.temperature_2m_max[slideNb]}
+          unit={tempUnit}
         />
-        <WeatherImageDisplay weatherCode="clear"/>
+        <WeatherImageDisplay weatherCode={getWeatherFromWMOCode(weatherData.weathercode[slideNb])}/>
+        <WindDisplay unit={windUnit} windspeedValue={weatherData.windspeed_10m_max[slideNb]}/>
       </Group>
-
+      <DaySlider dates={time} onSlideClick={(index)=>setSlideNb(index)}/>
     </Stack>
   )
 }

@@ -1,0 +1,1 @@
+export type Speed = "kmh"|"ms"|"mph"|"kn"
