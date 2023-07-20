@@ -1,63 +1,71 @@
-import { Box, Group, Stack, Text, Title } from "@mantine/core";
+import { Box, Modal, Stack, useMantineTheme, Text, Autocomplete, Button } from "@mantine/core";
+import { useDisclosure, useLocalStorage } from "@mantine/hooks";
+import { IconPlus } from "@tabler/icons-react";
 import cities from '@/json/cities.json'
-import { Weather } from "@/types/Weather";
-import { TemperatureDisplay } from "@/components/TemperatureDisplay";
-import { WeatherImageDisplay } from "@/components/WeatherImageDisplay";
-import { findPlaceFromCoords } from "@/utils/findPlaceFromCoords";
-import { DaySlider } from "@/components/DaySlider";
-import { useState } from "react";
-import { getWeatherFromWMOCode } from "@/utils/getWeatherFromWMOCode";
-import { WindDisplay } from "@/components/WindDisplay";
+import { FormEvent, useState } from "react";
+import {AutocompleteItem} from '@/components/AutocompleteItem'
+import { City } from "@/types/City";
 
-interface WeatherProps {
-  weather: Weather;
-}
+export default function Home() {
+    const [opened, modalHandlers] = useDisclosure(); 
+    const [value, setValue] = useState('')
+    const [favoriteCities, setFavoriteCities] = useLocalStorage<City[]>({key: "cities", defaultValue: []})
 
-export async function getServerSideProps() {
-  const marseilleCoord = cities.results.find((elem)=>elem.name==="Marseilles")!;
-  const urlParams = new URLSearchParams({
-    latitude: marseilleCoord.latitude.toString(),
-    longitude: marseilleCoord.longitude.toString(),
-    daily: "temperature_2m_max,temperature_2m_min,windspeed_10m_max,weathercode",
-    timezone: "auto",
-    forcast_days: "7",
-  })
-  const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?${urlParams}`)
-  const data = await weatherResponse.json();
-  return ({props: {weather: data}})
-}
+    const theme = useMantineTheme();
+    const correctedCities = cities.results.map((elem) => 
+    ({...elem, value: `${elem.name}, ${elem.admin3}, ${elem.admin2}, ${elem.admin1}, ${elem.country}`})
+    )
 
-export default function Home(props: WeatherProps) {
-  const [slideNb, setSlideNb] = useState(0);
+    const onSubmit = (e: FormEvent) => {
+        e.preventDefault();
+        const city = correctedCities.find((elem)=>elem.value===value)
+        if (!city) {
+            return;
+        }
+        if (!favoriteCities.find((elem)=>elem.id===city.id)) {
+            setFavoriteCities(favoriteCities.concat([city as City]))
+        }
+        modalHandlers.close();
+        setValue("");
+    }
 
-  const data = props.weather;
-  const coords = [data.latitude, data.longitude];
-  const tempUnit = data.daily_units.temperature_2m_max;
-  const windUnit = data.daily_units.windspeed_10m_max;
-  const time = data.daily.time;
-  const weatherData = data.daily;
-  
-  //On extrait toutes les données que l'on a typé
+    console.log(favoriteCities)
 
-  console.log(time[0])
-  return (
-    <Stack h="100%" w="100%" align="center">
-      <Title>Meteo from {findPlaceFromCoords(coords)} : {(new Date(time[slideNb])).toLocaleDateString()}</Title>
-      <Group
-        w="100%"
-        h="60%"
-        bg="cyan"
-        position="apart"
-        grow
-      >
-        <TemperatureDisplay 
-          temperature={weatherData.temperature_2m_max[slideNb]}
-          unit={tempUnit}
-        />
-        <WeatherImageDisplay weatherCode={getWeatherFromWMOCode(weatherData.weathercode[slideNb])}/>
-        <WindDisplay unit={windUnit} windspeedValue={weatherData.windspeed_10m_max[slideNb]}/>
-      </Group>
-      <DaySlider dates={time} onSlideClick={(index)=>setSlideNb(index)}/>
-    </Stack>
-  )
+    return (
+        <>
+            <Modal
+                h={300}
+                opened={opened}
+                onClose={modalHandlers.close}
+                title={<Text fw="bold">Import meteo from a new location</Text>}
+            >
+                <form onSubmit={onSubmit}>
+                <Autocomplete
+                    value={value}
+                    onChange={setValue}
+                    label="Choose a city"
+                    placeholder="Ex: Paris"
+                    dropdownPosition="bottom"
+                    withinPortal
+                    data={correctedCities}
+                    itemComponent={AutocompleteItem}
+                />
+                <Button type="submit">
+                    add
+                </Button>
+                </form>
+            </Modal>
+                <Stack
+                    onClick={modalHandlers.open}
+                    align="center"
+                    justify="center"
+                    h="100%"
+                    w="20%"
+                    bg="gray.2"   
+                    style={{borderRadius: theme.radius.lg, opacity: 0.5, cursor: "pointer"}}
+                >
+                    <IconPlus />
+                </Stack>
+        </>
+    )
 }

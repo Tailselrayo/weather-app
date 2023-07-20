@@ -6,5 +6,4 @@ export interface Weather {
     daily_units: WeatherUnits;
     latitude: number;
     longitude: number;
-    
 }

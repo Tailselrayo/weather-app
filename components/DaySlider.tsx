@@ -1,16 +1,21 @@
+import { Speed } from "@/types/Speed";
+import { Temperature } from "@/types/Temperature";
+import { WeatherData } from "@/types/WeatherData";
+import { WeatherUnits } from "@/types/WeatherUnits";
 import { Carousel, Embla } from "@mantine/carousel";
-import {Text} from "@mantine/core";
-import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
-import { useState } from "react";
+import { Card, Group, Stack, Text } from "@mantine/core";
+import { IconArrowLeft, IconArrowRight, IconTemperature, IconWind } from "@tabler/icons-react";
+import { WeatherIcons } from "./WeatherIcons";
 
-interface DaySliderProps {
-    dates: string[];
-    onSlideClick: (index: number) => void; 
+interface DaySliderProps extends WeatherData {
+    tempUnit: Temperature,
+    windUnit: Speed,
+    onSlideClick: (index: number) => void;
 }
 
 export function DaySlider(props: DaySliderProps) {
 
-    return(
+    return (
         <Carousel
             w="100%"
             height="100%"
@@ -18,12 +23,25 @@ export function DaySlider(props: DaySliderProps) {
             slideGap="sm"
             nextControlIcon={<IconArrowRight size={16} />}
             previousControlIcon={<IconArrowLeft size={16} />}
-            onSlideChange={(index)=>props.onSlideClick(index)}
+            onSlideChange={(index) => props.onSlideClick(index)}
         >
-            {Array.from({length: props.dates.length}).map((_,index)=> {
+            {Array.from({ length: props.time.length }).map((_, index) => {
                 return (
-                    <Carousel.Slide key={index} onClick={()=>props.onSlideClick(index)}>
-                        <Text ta="center" size="xl">{props.dates[index]}</Text>
+                    <Carousel.Slide key={index} onClick={() => props.onSlideClick(index)}>
+                        <Card style={{cursor: "pointer"}}>
+                            <Text ta="center" size="xl" fw="bold">{(new Date(props.time[index])).toDateString()}</Text>
+                            <Group position="center" grow>
+                                <Stack align="center" spacing={2}>
+                                    <IconTemperature />
+                                    <Text>{props.temperature_2m_max[index]} {props.tempUnit}</Text>
+                                </Stack>
+                                <WeatherIcons weatherCode={props.weathercode[index]} size={60}/>
+                                <Stack align="center" spacing={2}>
+                                    <IconWind />
+                                    <Text>{props.windspeed_10m_max[index]} {props.windUnit}</Text>
+                                </Stack>
+                            </Group>
+                        </Card>
                     </Carousel.Slide>
                 )
             })}
