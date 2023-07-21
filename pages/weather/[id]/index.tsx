@@ -34,7 +34,7 @@ export default function WeatherPage(props: WeatherPageProps) {
   const city = cities?.find((elem)=> elem.id ===props.id);
   useEffect(()=>{
     if(cities&&city) {
-        getWeatherFromCity(city, 14).then(setWeather)
+        getWeatherFromCity(city, 7).then(setWeather)
         console.log("request")
     }
   },[cities, city])
@@ -42,6 +42,7 @@ export default function WeatherPage(props: WeatherPageProps) {
   if (!weather||!city) {
     return <Loader></Loader>
   }
+  console.log(weather)
   const tempUnit = weather.daily_units.temperature_2m_max;
   const windUnit = weather.daily_units.windspeed_10m_max;
   const time = weather.daily.time;

@@ -103,10 +103,9 @@ export default function Home() {
                     align="center"
                     justify="center"
                     h="100%"
-                    bg="gray.2"
-                    style={{ borderRadius: theme.radius.lg, opacity: 0.5, cursor: "pointer" }}
+                    style={{ borderRadius: theme.radius.lg, cursor: "pointer", backgroundColor: "rgba(200,200,200, 0.4)" }}
                 >
-                    <IconPlus />
+                    <IconPlus size={100}/>
                 </Stack>
             </Grid.Col>
             <Grid.Col span={3}>
@@ -116,7 +115,7 @@ export default function Home() {
                         w="100%"
                         sx={{ flex: 1 }}
                         slideSize="31%"
-                        slideGap="md"
+                        slideGap="lg"
                         align="start"
                         loop
                         withControls={favoriteCities.length > 3}

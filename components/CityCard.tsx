@@ -14,15 +14,15 @@ interface CityCardProps extends City {
 
 export function CityCard(props: CityCardProps) {
     return (
-        <Card h="100%">
+        <Card h="100%" style={{backgroundColor: "rgba(255,255,255,0.4)"}}>
             <Stack h="100%" justify="space-between">
-                <Stack>
-                    <Title fz="xl" style={{ wordBreak: "break-word" }}>{props.name}</Title>
-                    <Text fz="sm">{`${props.country} > ${props.admin1} > ${props.admin2}`} </Text>
+                <Stack spacing={1}>
+                    <Title lineClamp={2} fz="xl" style={{ wordBreak: "break-word" }}>{props.name}</Title>
+                    <Text lineClamp={3} fz="sm">{`${props.country} > ${props.admin1} > ${props.admin2}`} </Text>
                 </Stack>
                 <Stack>
                     {props.weather ?
-                        <Stack py="lg">
+                        <Stack py="sm">
                             <Text fw="bold" ta="center">Today's forecast</Text>
                             <SmallTemperatureDisplay
                                 {...props.weather.daily}
@@ -50,7 +50,7 @@ export function CityCard(props: CityCardProps) {
                                 See details
                             </Button>
                         </Link>
-                        <Tooltip label="Remove">
+                        <Tooltip label="Remove" withinPortal>
                             <ActionIcon onClick={() => props.onDelete(props.id)}>
                                 <IconSquareRoundedX color="red" size={40} />
                             </ActionIcon>
