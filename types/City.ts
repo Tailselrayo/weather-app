@@ -7,5 +7,6 @@ export interface City extends Coords{
     country: string;
     admin1: string;
     admin2: string;
+    admin3: string;
     country_code: string;
 }

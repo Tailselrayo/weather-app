@@ -1,7 +1,6 @@
 import { Speed } from "@/types/Speed";
 import { Temperature } from "@/types/Temperature";
 import { WeatherData } from "@/types/WeatherData";
-import { WeatherUnits } from "@/types/WeatherUnits";
 import { Carousel, Embla } from "@mantine/carousel";
 import { Card, Group, Stack, Text } from "@mantine/core";
 import { IconArrowLeft, IconArrowRight, IconTemperature, IconWind } from "@tabler/icons-react";
