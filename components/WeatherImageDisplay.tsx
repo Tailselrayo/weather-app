@@ -1,6 +1,4 @@
-import { WeatherCode } from "@/types/WeatherCode";
 import { Stack, Title } from "@mantine/core";
-import Image from "next/image";
 import { WeatherIcons } from "./WeatherIcons";
 
 interface WeatherImageDisplayProps {

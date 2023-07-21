@@ -1,4 +1,3 @@
-import '@/styles/globals.css'
 import { AppShell } from '@mantine/core'
 import type { AppProps } from 'next/app'
 

@@ -20,7 +20,13 @@ const meta = {
 
   export const Default: Story = {
     args: {
-        dates: Array.from({length: 7}).map((_,index)=> `07/1${index}/2023`),
+        tempUnit: "°C",
+        windUnit: "kmh",
+        time: Array.from({length: 7}).map((_,index)=> `07/1${index}/2023`),
         onSlideClick: () => {},
+        temperature_2m_max: Array.from({length: 7}).map(() => Math.ceil(Math.random()*40)),
+        temperature_2m_min: Array.from({length: 7}).map(() => Math.floor(Math.random()*20)),
+        weathercode: Array.from({length: 7}).map(() => Math.floor(Math.random()*100)),
+        windspeed_10m_max: Array.from({length: 7}).map(()=>Math.floor(Math.random()*300)/10)
     }
   }
