@@ -5,6 +5,7 @@ import { Carousel, Embla } from "@mantine/carousel";
 import { Card, Group, Stack, Text } from "@mantine/core";
 import { IconArrowLeft, IconArrowRight, IconTemperature, IconWind } from "@tabler/icons-react";
 import { WeatherIcons } from "./WeatherIcons";
+import { useState } from "react";
 
 interface DaySliderProps extends WeatherData {
     tempUnit: Temperature,
@@ -13,6 +14,12 @@ interface DaySliderProps extends WeatherData {
 }
 
 export function DaySlider(props: DaySliderProps) {
+    const [embla, setEmbla] = useState<Embla>()
+
+    const onClick = (index: number) => {
+        props.onSlideClick(index);
+        embla?.scrollTo(index)
+    }
 
     return (
         <Carousel
@@ -23,10 +30,11 @@ export function DaySlider(props: DaySliderProps) {
             nextControlIcon={<IconArrowRight size={16} />}
             previousControlIcon={<IconArrowLeft size={16} />}
             onSlideChange={(index) => props.onSlideClick(index)}
+            getEmblaApi={setEmbla}
         >
             {Array.from({ length: props.time.length }).map((_, index) => {
                 return (
-                    <Carousel.Slide key={index} onClick={() => props.onSlideClick(index)}>
+                    <Carousel.Slide key={index} onClick={() => onClick(index)}>
                         <Card style={{cursor: "pointer", backgroundColor: "rgba(255,255,255,0.4)"}}>
                             <Text ta="center" size="xl" fw="bold">{(new Date(props.time[index])).toDateString()}</Text>
                             <Group position="center" grow>
@@ -34,7 +42,7 @@ export function DaySlider(props: DaySliderProps) {
                                     <IconTemperature />
                                     <Text>{props.temperature_2m_max[index]} {props.tempUnit}</Text>
                                 </Stack>
-                                <WeatherIcons weatherCode={props.weathercode[index]} size={60}/>
+                                <WeatherIcons weatherCode={props.weathercode[index]} isDay={1} size={60}/>
                                 <Stack align="center" spacing={2}>
                                     <IconWind />
                                     <Text>{props.windspeed_10m_max[index]} {props.windUnit}</Text>
