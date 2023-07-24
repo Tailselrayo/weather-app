@@ -4,7 +4,7 @@ export async function getWeatherFromCity(city: City, forcastDays: 1|3|7|14) {
     const urlParams = new URLSearchParams({
         latitude: city.latitude.toString(),
         longitude: city.longitude.toString(),
-        daily: "temperature_2m_max,temperature_2m_min,windspeed_10m_max,weathercode",
+        daily: "temperature_2m_max,temperature_2m_min,windspeed_10m_max,weathercode,sunset,sunrise,uv_index_max",
         hourly: "temperature_2m,apparent_temperature,windspeed_10m,weathercode,is_day",
         timezone: "auto",
         forcast_days: forcastDays.toString(),

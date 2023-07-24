@@ -28,7 +28,7 @@ export function SmallTemperatureDisplay(props: SmallTemperatureDisplayProps) {
             style={{ borderRadius: theme.radius.lg }}
             position="center"
         >
-            <WeatherIcons weatherCode={props.weathercode[props.dayFromToday]} size={60} />
+            <WeatherIcons weatherCode={props.weathercode[props.dayFromToday]} isDay={1} size={60} />
             <Stack spacing={2}>
                 <Group position="apart">
                     <Text>{`Max :`}</Text>
