@@ -27,7 +27,7 @@ export function DaySlider(props: DaySliderProps) {
             {Array.from({ length: props.time.length }).map((_, index) => {
                 return (
                     <Carousel.Slide key={index} onClick={() => props.onSlideClick(index)}>
-                        <Card style={{cursor: "pointer"}}>
+                        <Card style={{cursor: "pointer", backgroundColor: "rgba(255,255,255,0.4)"}}>
                             <Text ta="center" size="xl" fw="bold">{(new Date(props.time[index])).toDateString()}</Text>
                             <Group position="center" grow>
                                 <Stack align="center" spacing={2}>

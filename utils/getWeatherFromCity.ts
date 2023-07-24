@@ -5,6 +5,7 @@ export async function getWeatherFromCity(city: City, forcastDays: 1|3|7|14) {
         latitude: city.latitude.toString(),
         longitude: city.longitude.toString(),
         daily: "temperature_2m_max,temperature_2m_min,windspeed_10m_max,weathercode",
+        hourly: "temperature_2m,apparent_temperature,windspeed_10m,weathercode",
         timezone: "auto",
         forcast_days: forcastDays.toString(),
       })
