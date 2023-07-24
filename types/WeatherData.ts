@@ -4,4 +4,7 @@ export interface WeatherData {
     windspeed_10m_max: number[];
     weathercode: number[];
     time: string[];
+    sunrise: string[];
+    sunset: string[];
+    uv_index_max: number[];
 }
